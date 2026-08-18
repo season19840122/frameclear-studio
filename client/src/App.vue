@@ -1,0 +1,7 @@
+<script setup lang="ts">
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'; import AppSidebar from './components/AppSidebar.vue'; import DashboardView from './views/DashboardView.vue'; import EditorView from './views/EditorView.vue'; import ListView from './views/ListView.vue'; import SettingsView from './views/SettingsView.vue'; import { refresh, state } from './stores/app'
+const page=ref('dashboard'); const component=computed(()=>({dashboard:DashboardView,editor:EditorView,queue:ListView,history:ListView,settings:SettingsView}[page.value]||DashboardView)); let timer:number
+const systemTheme=window.matchMedia('(prefers-color-scheme: dark)'); const applyTheme=(theme:'light'|'dark'|'system')=>{document.documentElement.dataset.theme=theme==='system'?(systemTheme.matches?'dark':'light'):theme}; const updateSystemTheme=()=>{if(state.settings?.theme==='system')applyTheme('system')}
+onMounted(async()=>{await refresh(); timer=window.setInterval(refresh,2500);systemTheme.addEventListener('change',updateSystemTheme)}); onUnmounted(()=>{clearInterval(timer);systemTheme.removeEventListener('change',updateSystemTheme)}); watch(()=>state.settings?.theme,theme=>{if(theme)applyTheme(theme)},{immediate:true})
+</script>
+<template><div class="app-shell"><AppSidebar :active="page" @navigate="page=$event"/><main class="content"><KeepAlive><component :is="component" :history="page==='history'" @navigate="page=$event"/></KeepAlive></main><Transition><div v-if="state.toast" class="toast">{{state.toast}}</div></Transition></div></template>

@@ -1,0 +1,11 @@
+services:
+  frameclear:
+    build: .
+    ports: ["8787:8787"]
+    environment:
+      - PORT=8787
+      - DEFAULT_CONCURRENCY=3
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+      - ./outputs:/app/outputs
