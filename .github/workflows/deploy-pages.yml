@@ -32,6 +32,8 @@ jobs:
           npm install --no-save "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
       - run: npm run build --workspace client
       - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/upload-pages-artifact@v3
         with:
           path: client/dist
