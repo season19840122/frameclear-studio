@@ -26,7 +26,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - run: npm install --include=optional
+      - run: |
+          npm install --include=optional
+          ROLLUP_VERSION=$(node -p "require('./node_modules/rollup/package.json').version")
+          npm install --no-save "@rollup/rollup-linux-x64-gnu@$ROLLUP_VERSION"
       - run: npm run build --workspace client
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
